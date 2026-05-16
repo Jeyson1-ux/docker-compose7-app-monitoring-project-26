@@ -1,0 +1,23 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY . .
+
+RUN apt-get update && apt-get install -y \
+    bash \
+    curl \
+    docker.io \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN chmod +x monitor_container.sh
+
+RUN pip install --no-cache-dir \
+    flask \
+    psutil \
+    docker \
+    pandas
+
+EXPOSE 8001
+
+CMD ["bash", "-c", "python3 dashboard.py & bash ./monitor_container.sh live"]
